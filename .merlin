@@ -1,5 +1,4 @@
 S coinbase
-S core 
 S test
 S utility
 B _build

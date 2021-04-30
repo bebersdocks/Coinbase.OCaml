@@ -9,23 +9,19 @@ COINBASE_SRC = $(wildcard $(COINBASE_DIR)/*.mli $(COINBASE_DIR)/*.ml)
 UTILITY_DIR = utility
 UTILITY_SRC = $(wildcard $(UTILITYDIR)/*.mli $(UTILITY_DIR)/*.ml)
 
-CORE_DIR = core
-CORE_SRC = $(wildcard $(CORE_DIR)/*.mli $(CORE_DIR)/*.ml)
-
 TEST_DIR = test
 TEST_SRC = $(wildcard $(TEST_DIR)/*.ml)
 
-SRC = $(UTILITY_SRC) $(COINBASE_SRC) $(TEST_SRC) $(CORE_SRC)
+SRC = $(UTILITY_SRC) $(COINBASE_SRC) $(TEST_SRC)
 
 all: build clean
 
 build: 
-	ocamlfind $(COMPILER) -o $(OUTPUT) $(LINKPKG_CMD) $(PACKAGES) -thread -I $(COINBASE_DIR) -I $(UTILITY_DIR) -I $(TEST_DIR) -I $(CORE_DIR) $(SRC)
+	ocamlfind $(COMPILER) -o $(OUTPUT) $(LINKPKG_CMD) $(PACKAGES) -thread -I $(COINBASE_DIR) -I $(UTILITY_DIR) -I $(TEST_DIR) $(SRC)
 
 clean: 
 	rm _build -rf 
 	mkdir _build
 	mv $(COINBASE_DIR)/*.cmi $(COINBASE_DIR)/*cmx $(COINBASE_DIR)/*.o \
 	$(UTILITY_DIR)/*.cmi $(UTILITY_DIR)/*cmx $(UTILITY_DIR)/*.o \
-	$(TEST_DIR)/*.cmi $(TEST_DIR)/*cmx $(TEST_DIR)/*.o \
-	$(CORE_DIR)/*.cmi $(CORE_DIR)/*cmx $(CORE_DIR)/*.o _build \
+	$(TEST_DIR)/*.cmi $(TEST_DIR)/*cmx $(TEST_DIR)/*.o  _build \
