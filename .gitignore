@@ -1,3 +1,6 @@
 logs/
 _build/
+*.o
+*.cmi
+*.cmx
 .vscode/
