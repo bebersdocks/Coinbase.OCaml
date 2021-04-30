@@ -70,13 +70,13 @@ let print_current_orders () =
 
   List.iter 
     (fun (order: Parser.order) -> 
-    Logger.write_log DEBUG 
-      (Printf.sprintf 
-        "%f %f %s %s %s %s %f %f %s %b" 
-        order.price order.size (string_of_product order.product_id) (string_of_side order.side) 
-        (string_of_order order.order_type) order.created_at order.fill_fees order.filled_size
-        (string_of_status order.status) order.settled))
-  orders
+      Logger.write_log DEBUG 
+        (Printf.sprintf 
+          "%f %f %s %s %s %s %f %f %s %b" 
+          order.price order.size (string_of_product order.product_id) (string_of_side order.side) 
+          (string_of_order order.order_type) order.created_at order.fill_fees order.filled_size
+          (string_of_status order.status) order.settled))
+    orders
 
 let order () = 
   Logger.write_log DEBUG "BEGIN ORDER TEST\n";
@@ -137,4 +137,4 @@ let market () =
           fill.size fill.price fill.fee (string_of_liquidity fill.liquidity)))
     fills;
 
-  Logger.write_log DEBUG "END ORDER TEST\n"
+  Logger.write_log DEBUG "END MARKET TEST\n"
