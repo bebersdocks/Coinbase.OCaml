@@ -1,0 +1,12 @@
+S coinbase
+S core 
+S test
+S utility
+B _build
+
+PKG yojson
+PKG lwt
+PKG cohttp
+PKG cohttp-lwt-unix
+PKG cryptokit
+PKG xml-light
