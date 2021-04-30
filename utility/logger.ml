@@ -31,10 +31,6 @@ let write_log level message =
     string_of_int localtime.tm_mday ^ "_" ^ 
     string_of_int (localtime.tm_mon + 1) ^ "_" ^ 
     string_of_int (localtime.tm_year + 1900) in
-  let log = 
-    Printf.sprintf "%s [%s] %s\n"
-      time
-      (string_of_log_level level) 
-      message in 
+  let log = Printf.sprintf "%s [%s] %s\n" time (string_of_log_level level) message in 
   print_string log;
   write_log_to_file date log
