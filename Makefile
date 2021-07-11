@@ -1,5 +1,5 @@
 COMPILER = ocamlopt
-OUTPUT = GTM
+OUTPUT = output
 LINKPKG_CMD = -linkpkg -package
 PACKAGES = yojson,xml-light,unix,cohttp-lwt-unix,cryptokit,str
 
@@ -14,13 +14,15 @@ TEST_SRC = $(wildcard $(TEST_DIR)/*.ml)
 
 SRC = $(UTILITY_SRC) $(COINBASE_SRC) $(TEST_SRC)
 
-all: build clean
+all: 
+	make build
+	make clean
 
 build: 
-	ocamlfind $(COMPILER) -o $(OUTPUT) $(LINKPKG_CMD) $(PACKAGES) -thread -I $(COINBASE_DIR) -I $(UTILITY_DIR) -I $(TEST_DIR) $(SRC)
+	-ocamlfind $(COMPILER) -o $(OUTPUT) $(LINKPKG_CMD) $(PACKAGES) -thread -I $(COINBASE_DIR) -I $(UTILITY_DIR) -I $(TEST_DIR) $(SRC)
 
 clean: 
-	rm _build -rf 
+	-rm _build -rf 
 	mkdir _build
 	mv $(COINBASE_DIR)/*.cmi $(COINBASE_DIR)/*cmx $(COINBASE_DIR)/*.o \
 	$(UTILITY_DIR)/*.cmi $(UTILITY_DIR)/*cmx $(UTILITY_DIR)/*.o \
