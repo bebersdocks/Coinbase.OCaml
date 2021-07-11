@@ -20,7 +20,7 @@ let write_log_to_file date log =
   output_string output_channel log;
   close_out output_channel
 
-let write_log level message = 
+let write_log ?level:(level = DEBUG) message = 
   let unix_time = Unix.time() in 
   let localtime = Unix.localtime(unix_time) in 
   let time = 

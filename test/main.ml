@@ -9,20 +9,20 @@ open Request
 open Definition
 
 let account () = 
-  Logger.write_log DEBUG "BEGIN ACCOUNT TEST\n";
+  Logger.write_log "BEGIN ACCOUNT TEST\n";
 
   let accounts = 
     send_request GET Request.accounts 
     |> (fun (_, response) -> Parser.parse_accounts response) in 
     
-  Logger.write_log DEBUG "PRINTING ACCOUNTS";
+  Logger.write_log "PRINTING ACCOUNTS";
 
   List.iter 
     (fun (account: Parser.account) -> 
-      Logger.write_log DEBUG ((string_of_currency account.currency) ^ ":" ^ string_of_float account.balance))
+      Logger.write_log ((string_of_currency account.currency) ^ ":" ^ string_of_float account.balance))
     accounts;
 
-  Logger.write_log DEBUG "RETRIEVING FIRST EUR ACCOUNT BY ID";
+  Logger.write_log "RETRIEVING FIRST EUR ACCOUNT BY ID";
 
   let eur_account_id = 
     List.find (fun (account: Parser.account) -> account.currency == EUR) accounts
@@ -32,45 +32,45 @@ let account () =
     send_request GET (eur_account_id)
     |> (fun (_, response) -> Parser.parse_account response) in 
 
-  Logger.write_log DEBUG ((string_of_currency eur_account.currency) ^ ":" ^ string_of_float eur_account.balance);
+  Logger.write_log ((string_of_currency eur_account.currency) ^ ":" ^ string_of_float eur_account.balance);
 
-  Logger.write_log DEBUG "RETRIEVING ACCOUNT HISTORIES";
+  Logger.write_log "RETRIEVING ACCOUNT HISTORIES";
 
   let histories = 
     send_request GET (account_history eur_account.id)
     |> (fun (_, response) -> Parser.parse_account_histories response) in 
     
-  Logger.write_log DEBUG "PRINTING HISTORIES";
+  Logger.write_log "PRINTING HISTORIES";
 
   List.iter 
     (fun (history: Parser.account_history) -> 
-      Logger.write_log DEBUG (history.id ^ ":" ^ history.created_at ^ ":" ^ (string_of_float history.amount) ^ ":" ^ (string_of_float history.balance)))
+      Logger.write_log (history.id ^ ":" ^ history.created_at ^ ":" ^ (string_of_float history.amount) ^ ":" ^ (string_of_float history.balance)))
     histories;
 
-  Logger.write_log DEBUG "RETRIEVING HOLDS";
+  Logger.write_log "RETRIEVING HOLDS";
 
   let holds = 
     send_request GET (account_holds eur_account.id)
     |> (fun (_, response) -> Parser.parse_holds response) in 
 
-  Logger.write_log DEBUG "PRINTING HOLDS";
+  Logger.write_log "PRINTING HOLDS";
   List.iter 
     (fun (hold: Parser.hold_record) -> 
-      Logger.write_log DEBUG (hold.id ^ ":" ^ hold.created_at ^ ":" ^ (string_of_float hold.amount) ^ ":" ^ (string_of_hold hold.hold)))
+      Logger.write_log (hold.id ^ ":" ^ hold.created_at ^ ":" ^ (string_of_float hold.amount) ^ ":" ^ (string_of_hold hold.hold)))
     holds;
 
-  Logger.write_log DEBUG "END ACCOUNT TEST\n"
+  Logger.write_log "END ACCOUNT TEST\n"
 
 let print_current_orders () = 
   let orders = 
     send_request GET orders 
     |> (fun (_, response) -> Parser.parse_orders response) in
 
-  Logger.write_log DEBUG "\nPRINTING CURRENT ORDERS"; 
+  Logger.write_log "\nPRINTING CURRENT ORDERS"; 
 
   List.iter 
     (fun (order: Parser.order) -> 
-      Logger.write_log DEBUG 
+      Logger.write_log
         (Printf.sprintf 
           "%f %f %s %s %s %s %f %f %s %b" 
           order.price order.size (string_of_product order.product_id) (string_of_side order.side) 
@@ -79,11 +79,11 @@ let print_current_orders () =
     orders
 
 let order () = 
-  Logger.write_log DEBUG "BEGIN ORDER TEST\n";
+  Logger.write_log "BEGIN ORDER TEST\n";
 
   print_current_orders ();
 
-  Logger.write_log DEBUG "PLACING NEW ORDER";
+  Logger.write_log "PLACING NEW ORDER";
 
   let buy_order = Json.place_new_order 1.0 0.2 Buy ZRX_EUR Limit in 
 
@@ -91,7 +91,7 @@ let order () =
     send_request ~json:buy_order POST orders
     |> fun (_, response) -> Parser.parse_order response in
 
-  Logger.write_log DEBUG 
+  Logger.write_log
     (Printf.sprintf 
       "%s %s order for %s of size %f at price %f is %s"
       (string_of_order order.order_type) (string_of_side order.side) 
@@ -99,7 +99,7 @@ let order () =
 
   print_current_orders ();
 
-  Logger.write_log DEBUG "CANCELLING LAST ORDER";
+  Logger.write_log "CANCELLING LAST ORDER";
 
   send_request DELETE (cancel_order order.id) |> ignore;
 
@@ -115,10 +115,10 @@ let order () =
 
   print_current_orders ();
 
-  Logger.write_log DEBUG "END ORDER TEST\n"
+  Logger.write_log "END ORDER TEST\n"
 
 let market () =
-  Logger.write_log DEBUG "BEGIN MARKET TEST\n";
+  Logger.write_log "BEGIN MARKET TEST\n";
 
   send_request POST ~json:(Json.place_new_order 1.0 0.306 Buy ZRX_EUR Market) orders |> ignore;
 
@@ -130,11 +130,11 @@ let market () =
 
   List.iter
     (fun fill ->
-      Logger.write_log DEBUG 
+      Logger.write_log
         (Printf.sprintf 
           "%s %s trade of size %f filled at price %f with fee %f as %s" 
           (string_of_product fill.product) (string_of_side fill.side) 
           fill.size fill.price fill.fee (string_of_liquidity fill.liquidity)))
     fills;
 
-  Logger.write_log DEBUG "END MARKET TEST\n"
+  Logger.write_log "END MARKET TEST\n"

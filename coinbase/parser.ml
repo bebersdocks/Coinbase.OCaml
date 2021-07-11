@@ -31,7 +31,7 @@ let parse_accounts accounts =
       try 
         Some (parse_account account)
       with Unmatched_definition message -> 
-        Logger.write_log ERROR message;
+        Logger.write_log ~level:ERROR message;
         None) 
     (to_list accounts)
 
@@ -115,7 +115,7 @@ let parse_orders orders =
       try 
         Some (parse_order order) 
       with Unmatched_definition message -> 
-        Logger.write_log ERROR message;
+        Logger.write_log ~level:(ERROR) message;
         None)
     (to_list orders)
 
@@ -152,7 +152,7 @@ let parse_fills fills =
       try 
         Some (parse_fill fill) 
       with Unmatched_definition message -> 
-        Logger.write_log ERROR message;
+        Logger.write_log ~level:ERROR message;
         None)
     (to_list fills)
 

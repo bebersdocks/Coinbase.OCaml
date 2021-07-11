@@ -67,10 +67,10 @@ let request ?json http_method path  =
   http_body |> Cohttp_lwt.Body.to_string >|= fun (body) ->
   let json_response = Yojson.Basic.from_string body in 
   if http_code == 200 then 
-    Logger.write_log DEBUG 
-      (Printf.sprintf "%s %s [%d]" http_method_string (Uri.to_string uri) http_code)
+    Logger.write_log (Printf.sprintf "%s %s [%d]" http_method_string (Uri.to_string uri) http_code)
   else 
-    Logger.write_log ERROR
+    Logger.write_log 
+      ~level:ERROR
       (Printf.sprintf "%s %s [%d, %s]" http_method_string (Uri.to_string uri) http_code (parse_error json_response));
   (http_code, json_response)
 
