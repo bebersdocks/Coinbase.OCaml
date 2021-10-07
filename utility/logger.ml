@@ -20,17 +20,17 @@ let write_log_to_file date log =
   output_string output_channel log;
   close_out output_channel
 
+let time_string_of_time time = 
+  string_of_int time.tm_hour ^ ":" ^ string_of_int time.tm_min ^ ":" ^ string_of_int time.tm_sec
+
+let date_string_of_time time = 
+  string_of_int time.tm_mday ^ "_" ^ string_of_int (time.tm_mon + 1) ^ "_" ^ string_of_int (time.tm_year + 1900)
+
 let write_log ?level:(level = DEBUG) message = 
   let unix_time = Unix.time() in 
   let localtime = Unix.localtime(unix_time) in 
-  let time = 
-    string_of_int localtime.tm_hour ^ ":" ^ 
-    string_of_int localtime.tm_min ^ ":" ^ 
-    string_of_int localtime.tm_sec in
-  let date = 
-    string_of_int localtime.tm_mday ^ "_" ^ 
-    string_of_int (localtime.tm_mon + 1) ^ "_" ^ 
-    string_of_int (localtime.tm_year + 1900) in
+  let time = time_string_of_time localtime in
+  let date = date_string_of_time localtime in
   let log = Printf.sprintf "%s [%s] %s\n" time (string_of_log_level level) message in 
   print_string log;
   write_log_to_file date log
