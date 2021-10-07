@@ -1,12 +1,11 @@
+open Definition
+open Json 
+open Logger
 open Lwt_result
+open Parser
+open Request
 open Yojson.Basic
 open Yojson.Basic.Util
-
-open Json 
-open Parser
-open Logger
-open Request
-open Definition
 
 let account () = 
   Logger.write_log "BEGIN ACCOUNT TEST\n";

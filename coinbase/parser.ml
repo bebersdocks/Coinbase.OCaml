@@ -1,8 +1,7 @@
-open Yojson.Basic.Util
-
+open Definition
 open Common
 open Logger
-open Definition
+open Yojson.Basic.Util
 
 let parse_error error = 
   error |> member "message" |> to_string

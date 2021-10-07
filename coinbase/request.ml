@@ -1,11 +1,10 @@
-open Lwt
+open Authentication
+open Definition
 open Cohttp
 open Cohttp_lwt_unix
-open Yojson.Basic
-
+open Lwt
 open Parser
-open Definition
-open Authentication
+open Yojson.Basic
 
 type http_method = 
   | GET 

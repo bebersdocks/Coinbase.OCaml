@@ -1,8 +1,7 @@
-open Unix
-open Cryptokit
-
 open Common
+open Cryptokit
 open Settings
+open Unix
     
 let generate_signature timestamp http_method path body = 
   let message = timestamp ^ http_method ^ path ^ body in
