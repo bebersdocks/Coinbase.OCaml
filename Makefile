@@ -23,4 +23,4 @@ clean:
 
 build:
 	eval $(opam config env)
-	-ocamlfind $(COMPILER) -o $(OUTPUT) $(LINKPKG_CMD) $(PACKAGES) -thread -I $(COINBASE_DIR) -I $(UTILITY_DIR) -I $(TEST_DIR) $(SRC)
+	ocamlfind $(COMPILER) -o $(OUTPUT) $(LINKPKG_CMD) $(PACKAGES) -thread -I $(COINBASE_DIR) -I $(UTILITY_DIR) -I $(TEST_DIR) $(SRC)

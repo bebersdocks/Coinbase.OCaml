@@ -1,10 +1,22 @@
 open Definition
+open Cohttp
+open Cohttp_lwt
 open Common
 open Logger
+open Lwt
+open Yojson.Basic
 open Yojson.Basic.Util
 
 let parse_error error = 
   error |> member "message" |> to_string
+
+let parse_response (response, body) =
+  let code =
+    response
+    |> Response.status
+    |> Code.code_of_status in
+  body
+    |> Cohttp_lwt.Body.to_string >|= fun (body) -> (code, from_string body)
 
 type account = 
   { id : string;

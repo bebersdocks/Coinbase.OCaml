@@ -1,4 +1,10 @@
 open Definition
+open Yojson.Basic
+
+let string_of_json (json: t option) =
+  match json with 
+  | None -> ""
+  | Some json -> to_string json
 
 (* [TODO] Optional parameters *)
 let place_new_order ?(stop=None) ?(stop_price=0.0) size price side product order_type =

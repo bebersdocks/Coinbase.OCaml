@@ -1,10 +1,10 @@
 open Authentication
-open Definition
-open Cohttp
 open Cohttp_lwt_unix
+open Definition
+open Json
+open Logger
 open Lwt
 open Parser
-open Yojson.Basic
 
 type http_method = 
   | GET 
@@ -48,30 +48,26 @@ let product_stats product_id = products ^ "/" ^ product_id ^ "/stats"
 let currencies = "/currencies"
 let time = "/time"
 
+let log_response uri code method_string json = 
+  if code == 200 then 
+    Logger.write_log (Printf.sprintf "%s %s [%d]" method_string (Uri.to_string uri) code)
+  else
+    Logger.write_log
+      ~level:ERROR
+      (Printf.sprintf "%s %s [%d, %s]" method_string (Uri.to_string uri) code (parse_error json));
+  ()
+
 let request ?json http_method path  =
   let http_method_string = string_of_http_method http_method in 
   let uri = (Uri.of_string (api_endpoint ^ path)) in
-  let json_string = 
-    match json with 
-    | None -> "" 
-    | Some json -> Yojson.Basic.to_string json in
+  let json_string = string_of_json json in
   let headers = get_headers ~body:json_string path http_method_string in
-  let response = 
+  let response =
     match http_method with
     | GET -> Client.get ~headers uri 
     | POST -> Client.post ~body:(Cohttp_lwt__Body.of_string json_string) ~headers uri
     | DELETE -> Client.delete ~headers uri in
-  response >>= fun (http_response, http_body) ->
-  let http_code = http_response |> Response.status |> Code.code_of_status in
-  http_body |> Cohttp_lwt.Body.to_string >|= fun (body) ->
-  let json_response = Yojson.Basic.from_string body in 
-  if http_code == 200 then 
-    Logger.write_log (Printf.sprintf "%s %s [%d]" http_method_string (Uri.to_string uri) http_code)
-  else 
-    Logger.write_log 
-      ~level:ERROR
-      (Printf.sprintf "%s %s [%d, %s]" http_method_string (Uri.to_string uri) http_code (parse_error json_response));
-  (http_code, json_response)
+  response >>= parse_response
 
 let send_request ?json http_method path = 
   Lwt_main.run (request ?json http_method path)
